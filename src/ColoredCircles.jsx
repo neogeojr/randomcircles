@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import Circle from "./Circle";
 import ColorButtons from "./ColorButtons";
 
+function getRandom(min = 0, max = 100) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
 /*
     const circles = ["red", "green", "yellow", "orange"];
      <button onClick={() => { circles.push("MidnightBlue"); console.log(circles);}}
@@ -10,9 +14,30 @@ import ColorButtons from "./ColorButtons";
 */
 
 const ColoredCircles = () => {
-  const [circles, setCircles] = useState(["red", "green", "yellow", "orange"]);
+  //["red", "green", "yellow", "orange"]
+  const [circles, setCircles] = useState([]);
   const addCircle = (color) => {
-    setCircles((circles) => [...circles, color]); // makes new array
+    setCircles((circles) => [
+      ...circles,
+      { color, x: getRandom(), y: getRandom() },
+    ]); // makes new array
+  };
+
+  //   const changePosition = (index) => {
+  //     setCircles((circles) => {
+  //       const copy = [...circles];
+  //       copy[index].x = getRandom();
+  //       copy[index].y = getRandom();
+  //       return copy;
+  //     });
+  //   };
+
+  const changePosition = (index) => {
+    setCircles((circles) =>
+      circles.map((circle, i) =>
+        i === index ? { ...circle, x: getRandom(), y: getRandom() } : circle,
+      ),
+    );
   };
 
   return (
@@ -25,8 +50,15 @@ const ColoredCircles = () => {
         options={["teal", "limegreen", "magenta"]}
         addCircle={addCircle}
       />
-      {circles.map((color, index) => (
-        <Circle color={color} index={index} key={index} />
+      {circles.map(({ color, x, y }, index) => (
+        <Circle
+          changePosition={changePosition}
+          color={color}
+          index={index}
+          key={index}
+          x={x}
+          y={y}
+        />
       ))}
     </div>
   );
